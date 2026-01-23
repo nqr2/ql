@@ -20,7 +20,7 @@ if(QL_BUILD_DOCS)
   add_subdirectory("doc")
 endif()
 
-add_library("ql"
+add_library("ql" STATIC
   "include/ql/Allocator.h"
   "include/ql/Argparse.h"
   "include/ql/Array.h"
