@@ -51,9 +51,13 @@ bool runtest(const ql_Test *test, int index) {
   case BAILOUT:
     puts("Bail out!");
     return false;
-  default: {
+  case 0: {
     test->body();
   } break;
+  }
+
+  if(!pass && test->should_fail) {
+    pass = true;
   }
 
   if (!pass) {
