@@ -35,7 +35,7 @@ void ql_bailout() {
   longjmp(thisbuf, BAILOUT);
 }
 
-void runtest(const ql_Test *test, int index) {
+bool runtest(const ql_Test *test, int index) {
   thisreason = NULL;
 
   auto pass = true;
@@ -50,7 +50,7 @@ void runtest(const ql_Test *test, int index) {
     break;
   case BAILOUT:
     puts("Bail out!");
-    return;
+    return false;
   default: {
     test->body();
   } break;
@@ -77,9 +77,11 @@ void runtest(const ql_Test *test, int index) {
   }
 
   putchar('\n');
+
+  return pass;
 }
 
-void ql_test(const ql_Test *suite) {
+bool ql_test(const ql_Test *suite) {
   int count = 0;
 
   for (;; count++) {
@@ -90,11 +92,19 @@ void ql_test(const ql_Test *suite) {
 
   printf("TAP version 13\n1..%d\n", count);
 
+  auto passed = true;
+
   for (int i = 0;; i++) {
     if (suite[i].body == NULL) {
       break;
     }
 
-    runtest(&suite[i], i);
+    auto this_passed = runtest(&suite[i], i);
+
+    if (!this_passed) {
+      passed = false;
+    }
   }
+
+  return passed;
 }

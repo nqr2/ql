@@ -27,6 +27,6 @@ void ql_fail_with(const char *reason);
 
 void ql_bailout();
 
-void ql_test(const ql_Test *suite);
+bool ql_test(const ql_Test *suite);
 
 #endif

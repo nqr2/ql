@@ -47,7 +47,10 @@ const ql_Test SUITE[] = {
 
 int main() {
   ql_assert_add_handler(assert_failure);
-  ql_test(SUITE);
+
+  if (!ql_test(SUITE)) {
+    return 1;
+  }
 
   return 0;
 }

@@ -2,6 +2,8 @@
 #include <ql/Assert.h>
 #include <ql/Tap.h>
 
+#include <string.h>
+
 void assert_failure() {
   ql_fail_with("assertion failed");
 }
@@ -46,6 +48,12 @@ void f_int() {
 
   ql_parse(&parser, 3, (const char *[]){"arg", "--int", "11"});
   QL_ASSERT(flag == 11, "expected long FLAG_INT to set a value to 11");
+
+  ql_parse(&parser, 3, (const char *[]){"arg", "-i1"});
+  QL_ASSERT(flag == 1, "expected packed FLAG_INT to set a value to 1");
+
+  ql_parse(&parser, 3, (const char *[]){"arg", "--int=11"});
+  QL_ASSERT(flag == 11, "expected packed long FLAG_INT to set a value to 11");
 }
 
 static void pos_arg__pa(void *udata, const char *arg) {
@@ -64,6 +72,10 @@ void pos_arg() {
   QL_ASSERT(arg == known, "expected a positional argument to be set");
 }
 
+bool str_eq(const char *l, const char *r) {
+  return strcmp(l, r) == 0;
+}
+
 void f_string() {
   const char *k_short = "this is short";
   const char *k_long = "this is long";
@@ -80,6 +92,13 @@ void f_string() {
 
   ql_parse(&parser, 3, (const char *[]){"arg", "--string", k_long});
   QL_ASSERT(arg == k_long, "expected long FLAG_STRING to set a value");
+
+  ql_parse(&parser, 3, (const char *[]){"arg", "-sthis is short"});
+  QL_ASSERT(str_eq(arg, k_short), "expected packed FLAG_STRING to set a value");
+
+  ql_parse(&parser, 3, (const char *[]){"arg", "--string=this is long"});
+  QL_ASSERT(str_eq(arg, k_long),
+            "expected packed long FLAG_STRING to set a value");
 }
 
 void f_subcommand() {
@@ -118,7 +137,9 @@ const ql_Test SUITE[] = {
 int main() {
   ql_assert_add_handler(assert_failure);
 
-  ql_test(SUITE);
+  if (!ql_test(SUITE)) {
+    return 1;
+  }
 
   return 0;
 }

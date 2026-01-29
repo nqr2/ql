@@ -29,7 +29,7 @@ ql_Parser ql_create_parser(const ql_Flag *flags) {
   return (ql_Parser){.description = NULL, .length = length, .flags = flags};
 }
 
-void run_flag(const ql_Flag *flag, size_t *idx, const char **args,
+void run_flag(const ql_Flag *flag, size_t *idx, const char *next_arg,
               const ql_Parser **parser) {
   switch (flag->type) {
   case QL_FLAG_SET:
@@ -41,12 +41,12 @@ void run_flag(const ql_Flag *flag, size_t *idx, const char **args,
 
   case QL_FLAG_INT:
     *idx += 1;
-    *(int *)(flag->target) = atoi(args[*idx]);
+    *(int *)(flag->target) = atoi(next_arg);
     break;
 
   case QL_FLAG_STRING:
     *idx += 1;
-    *(const char **)(flag->target) = args[*idx];
+    *(const char **)(flag->target) = next_arg;
     break;
 
   case QL_FLAG_SUBCOMMAND:
@@ -90,7 +90,7 @@ size_t ql_parse(const ql_Parser *parser, size_t length, const char **args) {
     if (flag == (const ql_Flag *)1) {
       parser->positional_arg(parser->userdata, args[i]);
     } else if (flag != NULL) {
-      run_flag(flag, &i, args, &parser);
+      run_flag(flag, &i, args[i + 1], &parser);
     } else {
       return i;
     }

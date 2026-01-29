@@ -14,15 +14,17 @@ void assert_true_succeeds() {
 }
 
 const ql_Test SUITE[] = {
-    {"assert(false) fails", assert_false_fails, true},
-    {"assert(true) succeeds", assert_true_succeeds, false},
+    QL_FAIL(assert_false_fails),
+    QL_PASS(assert_true_succeeds),
     QL_SUITE_END,
 };
 
 int main() {
   ql_assert_add_handler(assert_failure);
 
-  ql_test(SUITE);
+  if (!ql_test(SUITE)) {
+    return 1;
+  }
 
   return 0;
 }

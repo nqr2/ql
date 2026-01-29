@@ -9,7 +9,9 @@ const ql_Test SUITE[] = {
 };
 
 int main() {
-  ql_test(SUITE);
+  if (!ql_test(SUITE)) {
+    return 1;
+  }
 
   return 0;
 }

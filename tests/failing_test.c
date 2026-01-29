@@ -5,12 +5,14 @@ void one() {
 }
 
 const ql_Test SUITE[] = {
-    {"one", one, true},
+    QL_FAIL(one),
     QL_SUITE_END,
 };
 
 int main() {
-  ql_test(SUITE);
+  if (!ql_test(SUITE)) {
+    return 1;
+  }
 
   return 0;
 }
