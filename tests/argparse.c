@@ -49,10 +49,12 @@ void f_int() {
   ql_parse(&parser, 3, (const char *[]){"arg", "--int", "11"});
   QL_ASSERT(flag == 11, "expected long FLAG_INT to set a value to 11");
 
-  ql_parse(&parser, 3, (const char *[]){"arg", "-i1"});
-  QL_ASSERT(flag == 1, "expected packed FLAG_INT to set a value to 1");
+  ql_parse(&parser, 2, (const char *[]){"arg", "-i1"});
+  QL_ASSERT(flag == 1,
+            "expected packed FLAG_INT to set a value to 1, was set to %d",
+            flag);
 
-  ql_parse(&parser, 3, (const char *[]){"arg", "--int=11"});
+  ql_parse(&parser, 2, (const char *[]){"arg", "--int=11"});
   QL_ASSERT(flag == 11, "expected packed long FLAG_INT to set a value to 11");
 }
 
@@ -76,6 +78,8 @@ bool str_eq(const char *l, const char *r) {
   return strcmp(l, r) == 0;
 }
 
+#include <stdio.h>
+
 void f_string() {
   const char *k_short = "this is short";
   const char *k_long = "this is long";
@@ -93,12 +97,17 @@ void f_string() {
   ql_parse(&parser, 3, (const char *[]){"arg", "--string", k_long});
   QL_ASSERT(arg == k_long, "expected long FLAG_STRING to set a value");
 
-  ql_parse(&parser, 3, (const char *[]){"arg", "-sthis is short"});
-  QL_ASSERT(str_eq(arg, k_short), "expected packed FLAG_STRING to set a value");
+  ql_parse(&parser, 2, (const char *[]){"arg", "-sthis is short"});
+  QL_ASSERT(
+      str_eq(arg, k_short),
+      "expected packed FLAG_STRING to set a value to '%s', got set to '%s'",
+      k_short, arg);
 
-  ql_parse(&parser, 3, (const char *[]){"arg", "--string=this is long"});
+  ql_parse(&parser, 2, (const char *[]){"arg", "--string=this is long"});
   QL_ASSERT(str_eq(arg, k_long),
-            "expected packed long FLAG_STRING to set a value");
+            "expected packed long FLAG_STRING to set a value to '%s', got set "
+            "to '%s'",
+            k_long, arg);
 }
 
 void f_subcommand() {
