@@ -44,6 +44,16 @@ add_library("ql" STATIC
   "src/Tap.c"
 )
 
+install(
+  DIRECTORY "include/ql"
+  TYPE INCLUDE
+)
+
+install(
+  TARGETS "ql"
+  ARCHIVE
+)
+
 target_include_directories("ql" PUBLIC "include")
 
 add_library(ql::ql ALIAS "ql")
