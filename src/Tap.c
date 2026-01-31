@@ -74,10 +74,10 @@ bool runtest(const ql_Test *test, int index) {
     } else if (skipped) {
       printf(" SKIP");
     }
+  }
 
-    if (thisreason != NULL) {
-      printf(" %s", thisreason);
-    }
+  if (thisreason != NULL) {
+    printf(" # %s", thisreason);
   }
 
   putchar('\n');
@@ -88,13 +88,9 @@ bool runtest(const ql_Test *test, int index) {
 bool ql_test(const ql_Test *suite) {
   int count = 0;
 
-  for (int i = 0 ;; count++, i++) {
-    if (suite[i].body == NULL) {
+  for (;; count++) {
+    if (suite[count].body == NULL) {
       break;
-    }
-
-    if (suite[i].name == NULL) {
-      continue;
     }
   }
 
@@ -105,11 +101,6 @@ bool ql_test(const ql_Test *suite) {
   for (int i = 0;; i++) {
     if (suite[i].body == NULL) {
       break;
-    }
-
-    if (suite[i].name == NULL) {
-      suite[i].body();
-      continue;
     }
 
     auto this_passed = runtest(&suite[i], i);
