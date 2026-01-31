@@ -17,6 +17,9 @@ typedef struct {
 #define QL_FAIL(Function)                                                      \
   {.name = #Function, .body = (Function), .should_fail = true}
 
+#define QL_FIXTURE(Function)                                                   \
+  {.name = NULL, .body = (Function), .should_fail = false}
+
 #define QL_SUITE_END {.name = NULL, .body = NULL, .should_fail = false}
 
 void ql_skip();
